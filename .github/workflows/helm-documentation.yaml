@@ -20,7 +20,7 @@ jobs:
         git-push: true
         git-commit-message: "chore: update values schema json"
     - name: Run helm-docs
-      uses: losisin/helm-docs-github-action@v1.6
+      uses: losisin/helm-docs-github-action@v1.7
       with:
         git-push: true
         git-push-user-name: "$GITHUB_ACTOR"
