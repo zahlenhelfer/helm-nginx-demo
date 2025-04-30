@@ -16,6 +16,7 @@ jobs:
       uses: losisin/helm-values-schema-json-action@v1
       with:
         input: charts/nginx-demo/values.yaml
+        output: charts/nginx-demo/values.schema.json
         git-push: true
         git-commit-message: "chore: update values schema json"
     - name: Run helm-docs
