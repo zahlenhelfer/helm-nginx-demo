@@ -21,9 +21,19 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
+      - name: Import GPG key
+        run: |
+          echo "${{ secrets.CR_GPG_PRIVATE_KEY }}" | gpg --batch --import
+          KEY_ID=$(gpg --list-keys --with-colons | grep '^pub' | cut -d':' -f5)
+          echo "GPG_KEY_ID=$KEY_ID" >> $GITHUB_ENV
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
         with:
           charts_dir: charts
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          CR_GPG_PRIVATE_KEY: "${{ secrets.CR_GPG_PRIVATE_KEY }}"
+          CR_GPG_PASSPHRASE: "${{ secrets.CR_GPG_PASSPHRASE }}"
+          CR_SIGN: "true"
+          CR_KEY: "${{ env.GPG_KEY_ID }}"
