@@ -21,10 +21,16 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-      - name: Import GPG key
+      - name: Prepare GPG key #this step is for using exported keys and make your github runner
         run: |
-          echo "${{ secrets.CR_GPG_PRIVATE_KEY }}" | gpg --dearmor --output keyring.gpg
-          echo "${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}" > passphrase-file.txt
+          gpg_dir=.cr-gpg
+          mkdir "$gpg_dir"
+          keyring="$gpg_dir/secring.gpg" #referring keyring to private key of gpg
+          base64 -d <<< "$GPG_KEYRING_BASE64" > "$keyring" #storing base64 GPG key into keyring 
+          passphrase_file="$gpg_dir/passphrase"
+          echo "$GPG_PASSPHRASE" > "$passphrase_file" #storing passphrase data into a file
+          echo "CR_PASSPHRASE_FILE=$passphrase_file" >> "$GITHUB_ENV" #saving passphrase into github-environment
+          echo "CR_KEYRING=$keyring" >> "$GITHUB_ENV" #saving private key into github-environemnt
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
@@ -32,8 +38,5 @@ jobs:
           charts_dir: charts
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          CR_GPG_PRIVATE_KEY: "${{ secrets.CR_GPG_PRIVATE_KEY }}"
-          CR_PASSPHRASE_FILE: passphrase-file.txt
-          CR_KEY: "${{ secrets.GPG_PRIVATE_KEY_UID }}"
-          CR_KEYRING: keyring.gpg
-          CR_SIGN: true
+          CR_KEY: "${{ secrets.CR_KEY }}" #Key name used while creating key
+          CR_SIGN: true # set to true to sign images
