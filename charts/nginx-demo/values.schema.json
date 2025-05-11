@@ -27,11 +27,13 @@
         },
         "image": {
             "properties": {
-                "pullPolicy": {
-                    "type": "string"
-                },
                 "repository": {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "^[a-z0-9-_./]+$"
+                },
+                "pullPolicy": {
+                    "type": "string",
+                    "pattern": "^(Always|Never|IfNotPresent)$"
                 },
                 "tag": {
                     "type": "string"
