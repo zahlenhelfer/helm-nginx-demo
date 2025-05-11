@@ -3,26 +3,27 @@ name: Document Helm-Chart
 on:
   push:
     branches:
-    - main
+      - main
 
 jobs:
   generate:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-      with:
-        ref: ${{ github.event.pull_request.head.ref }}
-    - name: Generate values schema json
-      uses: losisin/helm-values-schema-json-action@v1
-      with:
-        input: charts/nginx-demo/values.yaml
-        output: charts/nginx-demo/values.schema.json
-        git-push: true
-        git-commit-message: "chore: update values schema json"
-    - name: Run helm-docs
-      uses: losisin/helm-docs-github-action@v1
-      with:
-        git-push: true
-        git-push-user-name: "$GITHUB_ACTOR"
-        git-push-user-email: "${GITHUB_ACTOR}@users.noreply.github.com"
-        git-commit-message: "chore: update Helm documentation"
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Generate values schema json
+        uses: losisin/helm-values-schema-json-action@v1
+        with:
+          input: charts/nginx-demo/values.yaml
+          output: charts/nginx-demo/values.schema.json
+          git-push: true
+          git-commit-message: "chore: update values schema json"
+      - name: Run helm-docs
+        uses: losisin/helm-docs-github-action@v1
+        with:
+          template-files: README.md.gotmpl
+          git-push: true
+          git-push-user-name: "$GITHUB_ACTOR"
+          git-push-user-email: "${GITHUB_ACTOR}@users.noreply.github.com"
+          git-commit-message: "chore: update Helm documentation"
