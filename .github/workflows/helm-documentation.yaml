@@ -22,7 +22,7 @@ jobs:
       - name: Run helm-docs
         uses: losisin/helm-docs-github-action@v1
         with:
-          template-files: README.md.gotmpl
+          template-files: charts/nginx-demo/README.md.gotmpl
           git-push: true
           git-push-user-name: "$GITHUB_ACTOR"
           git-push-user-email: "${GITHUB_ACTOR}@users.noreply.github.com"
